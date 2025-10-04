@@ -186,7 +186,16 @@ const fileUploadSecurity = async (req, res, next) => {
 
     try {
         // Validate file type by reading file content (magic numbers)
-        const fileBuffer = await require('fs-extra').readFile(req.file.path);
+        // Validate that the file path is under the UPLOAD_ROOT directory
+        const uploadFilePath = path.resolve(UPLOAD_ROOT, path.basename(req.file.path));
+        if (!uploadFilePath.startsWith(UPLOAD_ROOT)) {
+            await require('fs-extra').unlink(req.file.path);
+            return res.status(400).json({
+                message: 'Invalid upload location detected.'
+            });
+        }
+
+        const fileBuffer = await require('fs-extra').readFile(uploadFilePath);
         const detectedType = await fileType.fromBuffer(fileBuffer);
 
         const allowedTypes = {
@@ -198,7 +207,7 @@ const fileUploadSecurity = async (req, res, next) => {
 
         // Validate detected MIME type
         if (!detectedType || !allowedTypes[detectedType.mime]) {
-            await require('fs-extra').unlink(req.file.path);
+            await require('fs-extra').unlink(uploadFilePath);
             return res.status(400).json({
                 message: 'Invalid file type detected. Only JPEG, PNG, GIF, and PDF files are allowed.'
             });
@@ -206,7 +215,7 @@ const fileUploadSecurity = async (req, res, next) => {
 
         // Check file size
         if (req.file.size > 5 * 1024 * 1024) {
-            await require('fs-extra').unlink(req.file.path);
+            await require('fs-extra').unlink(uploadFilePath);
             return res.status(400).json({
                 message: 'File size too large. Maximum size is 5MB.'
             });
@@ -224,7 +233,7 @@ const fileUploadSecurity = async (req, res, next) => {
     } catch (error) {
         console.error('File validation error:', error);
         try {
-            await require('fs-extra').unlink(req.file.path);
+            await require('fs-extra').unlink(uploadFilePath);
         } catch (unlinkError) {
             console.error('Failed to delete invalid file:', unlinkError);
         }
