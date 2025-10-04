@@ -1,0 +1,45 @@
+{
+  "name": "imips-backend",
+  "version": "1.0.0",
+  "description": "Insophinia IMIPS Backend - Production Ready",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "generate-keys": "node scripts/generate-keys.js",
+    "test": "jest --coverage",
+    "lint": "eslint .",
+    "security-check": "npm audit"
+  },
+  "keywords": [
+    "inventory",
+    "management",
+    "imips",
+    "backend"
+  ],
+  "author": "Insophinia",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.2.1",
+    "file-type": "^21.0.0",
+    "fs-extra": "^11.3.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^3.0.1",
+    "multer": "^2.0.2",
+    "mysql2": "^3.15.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.6",
+    "path": "^0.12.7",
+    "uuid": "^13.0.0",
+    "winston": "^3.18.3"
+  }
+}
